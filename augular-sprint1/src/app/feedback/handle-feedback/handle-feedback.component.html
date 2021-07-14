@@ -1,0 +1,92 @@
+<ngx-bootstrap-spinner
+  bdColor="rgba(51,51,51,0.8)"
+  size="default"
+  color="#fff"
+  type="border"
+  loadingText="Đang tải dữ liệu..."
+>
+</ngx-bootstrap-spinner>
+<div class="container register-form">
+  <div class="row justify-content-center align-items-center mx-auto">
+    <div class="w-75 form">
+      <div class="col-md-12 form-content">
+        <div class="note">
+          <p style="font-size: 28px">Xử lý phản hồi</p>
+        </div>
+        <form [formGroup]="handleFeedbackForm" (ngSubmit)="submit()">
+          <div class="form-group">
+            <label for="title">Tiêu đề</label>
+            <input readonly type="text" class="form-control" [value]="feedback.feedbackTitle" id="title"/>
+          </div>
+          <div class="form-group">
+            <label for="feedbackUser">Người gửi phản hồi</label>
+            <ng-container *ngFor="let user of userList">
+              <input *ngIf="user.id == feedback.userFeedback" readonly type="text" class="form-control"
+                     [value]="user.username" id="feedbackUser"/>
+            </ng-container>
+          </div>
+          <div class="form-group">
+            <label for="time">Thời gian gửi</label>
+            <input readonly type="text" class="form-control" [value]="feedback.feedbackTime | date:'dd/MM/yyyy hh:mm'"
+                   id="time"/>
+          </div>
+          <div class="form-group">
+            <label for="roomName">Tên phòng</label>
+            <select disabled class="form-control" id="roomName">
+              <option [selected]="feedback.meetingRoom == null">Trống</option>
+              <option [selected]="feedback.meetingRoom == room.id" *ngFor="let room of roomList"
+                      [value]="room.id">{{room.name}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="feedbackContent">Nội dung cần xử lý</label>
+            <textarea readonly [value]="feedback.feedbackContent" class="form-control" id="feedbackContent"
+                      rows="3"></textarea>
+          </div>
+          <div class="form-group" *ngIf="feedback.image != null">
+            <div class="row">
+              <ng-container *ngFor="let image of feedback.image">
+                <a class="col-6 mb-4 text-center" [href]="image" target="_blank"><img height="400px" width="400px" [src]="image" id="image"></a>
+              </ng-container>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="userName">Chọn nhân viên gửi thông báo <span
+              class="text-danger">*</span></label>
+            <select class="form-control" id="userName" formControlName="user">
+              <option value="">Chọn nhân viên</option>
+              <option *ngFor="let user of userList" [ngValue]="user.id">{{user.username}}</option>
+            </select>
+            <span *ngIf="!user.valid && user.touched" [hidden]="!user.hasError('required')" class="text-danger">
+              Bạn phải chọn người dùng.
+            </span>
+          </div>
+          <div class="form-group">
+            <label for="content">Nội dung xử lý <span class="text-danger">*</span></label>
+            <textarea class="form-control" id="content" rows="3" formControlName="content"></textarea>
+            <span *ngIf="!content.valid && content.touched" [hidden]="!content.hasError('required')"
+                   class="text-danger">
+              Bạn phải nhập nội dung xử lý.
+            </span>
+            <span *ngIf="!content.valid && content.touched" [hidden]="!content.hasError('pattern')"
+                   class="text-danger">
+              Bạn nhập không đúng định dạng..
+            </span>
+            <span *ngIf="!content.valid && content.touched"
+                   [hidden]="!content.hasError('minlength')" class="text-danger">
+              Bạn phải nhập ít nhất 5 ký tự.
+            </span>
+            <span *ngIf="!content.valid && content.touched"
+                   [hidden]="!content.hasError('maxlength')" class="text-danger">
+              Bạn chỉ được nhập tối đa 500 ký tự.
+            </span>
+          </div>
+          <div class="form-group text-right">
+            <button type="reset" class="btn btnSubmitCancel">Hủy</button>
+            <button [disabled]="!handleFeedbackForm.valid" type="submit" class="btn btnSubmit ml-1">Xử lý</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

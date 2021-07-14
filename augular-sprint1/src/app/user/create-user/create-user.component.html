@@ -1,0 +1,124 @@
+<div class="container register-form mt-5">
+  <div class="row justify-content-center align-items-center">
+    <div class="form w-75">
+      <div class="col-md-12 form-content">
+        <div class="note">
+          <p style="font-size: 28px">Thêm mới người dùng</p>
+        </div>
+        <form [formGroup]="register" (ngSubmit)="submit()">
+          <div class="form-group">
+            <label for="username">Tên đăng nhập: <span class="text-danger"
+            >*</span></label>
+            <input type="text" class="form-control" id="username" formControlName="username"/>
+            <small class="text-danger" *ngIf="register.controls.username.hasError('required')
+              && register.controls.username.touched">
+              Vui lòng nhập tên đăng nhập.
+            </small>
+            <small class="text-danger" *ngIf="register.controls.username.hasError('minlength')
+              && register.controls.username.touched">
+              Tên đăng nhập phải từ 6-50 ký tự.
+            </small>
+            <small class="text-danger" *ngIf="register.controls.username.hasError('maxlength')
+              && register.controls.username.touched">
+              Tên đăng nhập phải từ 6-50 ký tự.
+            </small>
+            <small class="text-danger" *ngIf="register.controls.username.hasError('pattern')
+              && register.controls.username.touched">
+              Vui lòng không sử dụng chữ in hoa và ký tự đặc biệt.
+            </small>
+          </div>
+          <ng-container formGroupName="pwGroup">
+            <div class="form-group">
+              <label for="password">Mật khẩu: <span class="text-danger">*</span></label>
+              <input type="password" class="form-control" id="password" formControlName="password"/>
+              <small class="text-danger" *ngIf="getPassword?.hasError('required')
+              && getPassword?.touched">Vui lòng nhập mật khẩu. </small>
+              <small class="text-danger" *ngIf="getPassword?.hasError('minlength')
+              && getPassword?.touched">Mật khẩu phải từ 6-30 ký tự. </small>
+              <small class="text-danger" *ngIf="getPassword?.hasError('maxlength')
+              && getPassword?.touched">Mật khẩu phải từ 6-30 ký tự. </small>
+            </div>
+            <div class="form-group">
+              <label for="confirmPassword">Xác nhận mật khẩu: <span class="text-danger">*</span></label>
+              <input type="password" class="form-control" id="confirmPassword" formControlName="confirmPassword"/>
+              <small class="text-danger" *ngIf="pwGroup?.hasError('passwordNotMatch') && pwGroup?.touched">
+                Xác nhận mật khẩu không đúng.
+              </small>
+            </div>
+          </ng-container>
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="role">Quyền truy cập: <span class="text-danger"
+                >*</
+                  span></label>
+                <select name="role" class="form-control" id="role" formControlName="role">
+                  <option value="" disabled>Chọn quyền truy cập</option>
+                  <option *ngFor="let roles of roleList" [ngValue]="roles.id">
+                    <ng-container *ngIf="roles.id == 2">User</ng-container>
+                    <ng-container *ngIf="roles.id == 1">Admin</ng-container>
+                  </option>
+                </select>
+                <small class="text-danger" *ngIf="register.controls.role.hasError('required')
+              && register.controls.role.touched">
+                  Vui lòng chọn quyền truy cập.
+                </small>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="category">Bộ phận: <span class="text-danger">*</span></label>
+                <select name="category" class="form-control" id="category" formControlName="department">
+                  <option value="" selected>Chọn bộ phận</option>
+                  <option *ngFor="let departments of departmentList"
+                          [ngValue]="departments.id">{{departments.name}}</option>
+                </select>
+                <small class="text-danger" *ngIf="register.controls.department.hasError('required')
+              && register.controls.department.touched">
+                  Vui lòng chọn bộ phận.
+                </small>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="name">Họ và tên: <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="name" formControlName="name"/>
+            <small class="text-danger" *ngIf="register.controls.name.hasError('required')
+              && register.controls.name.touched">
+              Vui lòng nhập họ và tên.
+            </small>
+            <small class="text-danger" *ngIf="register.controls.name.hasError('minlength')
+              && register.controls.name.touched">
+              Họ và tên phải từ 6-30 ký tự.
+            </small>
+            <small class="text-danger" *ngIf="register.controls.name.hasError('maxlength')
+              && register.controls.name.touched">
+              Họ và tên phải từ 6-30 ký
+              tự.
+            </small>
+            <small class="text-danger" *ngIf="register.controls.name.hasError('pattern')
+              && register.controls.name.touched">
+              Vui lòng không sử dụng số, ký tự đặc biệt, và viết hoa chữ cái đầu. Tên hợp lệ ( Nguyễn Văn A ).
+            </small>
+          </div>
+          <div class="form-group">
+            <label for="email">Email: <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="email" formControlName="email"/>
+            <small class="text-danger" *ngIf="register.controls.email.hasError('required')
+              && register.controls.email.touched">
+              Vui lòng nhập email.
+            </small>
+            <small class="text-danger" *ngIf="register.controls.email.hasError('pattern')
+              && register.controls.email.touched">
+              Email không đúng định dạng.
+            </small>
+          </div>
+          <div class="form-group text-right">
+            <button type="button" class="btnSubmitCancel" routerLink="/nguoi-dung/danh-sach">Hủy bỏ</button>
+            <button type="submit" class="btnSubmit ml-1" [disabled]="!register.valid" autofocus>Thêm mới</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

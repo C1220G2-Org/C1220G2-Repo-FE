@@ -1,0 +1,128 @@
+<nav class="mb-4 navbar navbar-expand-lg navbar-dark" style="background: #2b558c; min-height: 125px">
+  <a href="#" class="navbar-brand"> <img src="../../../assets/images/logo.png" height="500" width="500"/>
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-3"
+          aria-controls="navbarSupportedContent-3" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent-3">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item" routerLinkActive="active" *ngIf="isLoggedIn">
+        <a href="#" class="nav-item nav-link" routerLink="/dat-phong-hop/man-hinh"><i class="fa fa-home"></i> TRANG CHỦ</a>
+      </li>
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-item nav-link" routerLink="/gioi-thieu"><i class="fas fa-info-circle"></i> GIỚI THIỆU</a>
+      </li>
+      <li class="nav-item" *ngIf="isLoggedIn" routerLinkActive="active">
+        <a routerLink="/tai-san/danh-sach" *ngIf="showAdminBoard" class="nav-item nav-link"><i class="fas fa-cogs"></i>
+          TÀI SẢN</a>
+      </li>
+      <li class="nav-item dropdown" *ngIf="isLoggedIn" routerLinkActive="active">
+        <a class=" nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          <i class="far fa-hospital"></i> PHÒNG HỌP
+        </a>
+        <div class="dropdown-menu " aria-labelledby="dropdownMenuLink">
+          <a class="dropdown-item"
+             routerLink="/dat-phong-hop/searchEmpty">
+            <i class="fas fa-search"></i> Tìm
+            kiếm phòng họp</a>
+          <a class="dropdown-item"
+             routerLink="/phong-hop/danh-sach">
+            <i class="fas fa-list text-success"></i> Danh sách phòng họp</a>
+          <a class="dropdown-item"
+             routerLink="/dat-phong-hop/create/:meetingRoom/:meetingType/:startDateVariable/:endDateVariable/:startHourVariable/:endHourVariable">
+            <i class="fas fa-pen-alt"></i> Đăng ký phòng họp</a>
+        </div>
+      </li>
+      <li class="nav-item" *ngIf="showAdminBoard" routerLinkActive="active">
+        <a class="nav-item nav-link" routerLink="/nguoi-dung/danh-sach"><i
+          class="fa fa-users"></i> NGƯỜI DÙNG</a>
+      </li>
+      <li class="nav-item" *ngIf="isLoggedIn" routerLinkActive="active">
+        <a href="#" class="nav-item nav-link" routerLink="/thong-ke/"><i class="fas fa-calculator"></i> THỐNG KÊ</a>
+      </li>
+      <li class="nav-item dropdown" *ngIf="showUserBoard" routerLinkActive="active">
+        <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink7" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-comment-dots"></i> PHẢN HỒI
+        </a>
+        <div class="dropdown-menu dropdown-menu-right dropdown-unique"
+             aria-labelledby="navbarDropdownMenuLink7">
+          <a class="dropdown-item"
+             routerLink="/phan-hoi/them-moi-phan-hoi-phong-hop"><i class="far fa-building"></i>
+            Phản hồi phòng họp</a>
+          <a class="dropdown-item"
+             routerLink="/phan-hoi/them-moi-phan-hoi-loi-ki-thuat"><i class="fas fa-cogs"></i>
+            Phản hồi lỗi kỹ thuật</a>
+          <a class="dropdown-item"
+             routerLink="/phan-hoi/danh-sach-phan-hoi-nguoi-dung"><i
+            class="far fa-id-card text-success"></i> Danh sách phản hồi</a>
+        </div>
+      </li>
+      <li class="nav-item" *ngIf="showAdminBoard" routerLinkActive="active">
+        <a class="nav-item nav-link" routerLink="/phan-hoi/danh-sach-phan-hoi"><i class="fas fa-comment-dots"></i> PHẢN
+          HỒI</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto" *ngIf="(afAuth.authState | async) === null">
+      <li class="nav-item" *ngIf="!isLoggedIn">
+        <a class="nav-link" routerLink="/dang-nhap">ĐĂNG NHẬP</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto" *ngIf="isLoggedIn">
+      <li class="nav-item" *ngIf="showAdminBoard" routerLinkActive="active">
+        <a href="/nguoi-dung/tao-moi" class="nav-item nav-link" routerLink="/nguoi-dung/tao-moi"><i
+          class="fas fa-user-plus"></i> ĐĂNG KÝ</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink1" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false" (click)="view()" style="cursor: pointer;"><i
+          class="fas fa-bell"></i><sup *ngIf="showNewNotification"><i class="fas fa-circle" style="color: red"></i></sup>
+        </a>
+        <div class="dropdown-menu scrollable-menu dropdown-menu-right dropdown-unique"
+             aria-labelledby="navbarDropdownMenuLink1">
+          <a style="cursor: pointer;" class="dropdown-item" *ngFor="let notification of notificationList"
+             [ngStyle]="{'background-color': notification.background }" class="dropdown-item"
+             (click)="onSelect(notification)">{{notification.content | formatContent:0:35}}</a>
+          <p *ngIf="listSize == 0" class="dropdown-item" style="color: red">Bạn không có thông báo nào.</p>
+        </div>
+      </li>
+      <li class="nav-item dropdown" routerLinkActive="active">
+        <a class="nav-link dropdown-toggle" href="#" role="button" id="navbarDropdownMenuLink" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+          <strong>{{username}}</strong>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right dropdown-unique"
+             aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" [routerLink]="['/nguoi-dung/thong-tin/',userId]"><i
+            class="far fa-id-card text-success"></i> Thông
+            tin</a>
+          <a class="dropdown-item" *ngIf="!showAdminBoard" [routerLink]="['/nguoi-dung/lich-su-dat-phong', userId]"><i
+            class="fas fa-history"></i> Lịch sử đăng ký</a>
+          <a class="dropdown-item" *ngIf="showAdminBoard" routerLink="/nguoi-dung/quan-ly-dat-phong"><i
+            class="fas fa-history"></i> Quản lý lịch sử đăng ký</a>
+          <a class="dropdown-item" [routerLink]="['/nguoi-dung/doi-mat-khau/',userId]"><i
+            class="fas fa-cog text-primary"></i> Đổi mật khẩu</a>
+          <a class="dropdown-item" (click)="logout()"><i class="fas fa-sign-out-alt text-warning"></i> Đăng xuất</a>
+        </div>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto" *ngIf="afAuth.authState | async as user">
+      <li class="nav-item dropdown" routerLinkActive="active">
+        <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink5" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false"> <strong>{{user.displayName}}</strong>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right dropdown-unique"
+             aria-labelledby="navbarDropdownMenuLink5">
+          <a class="dropdown-item" [routerLink]="['/nguoi-dung/thong-tin/',userId]"><i
+            class="far fa-id-card text-success"></i> Thông
+            tin</a>
+          <a class="dropdown-item" (click)="signOut()"><i
+            class="fas fa-sign-out-alt text-warning"></i> Đăng xuất</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
+

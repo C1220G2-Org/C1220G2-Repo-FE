@@ -1,0 +1,127 @@
+<div class="container-xl">
+  <div class="table-responsive">
+    <div class="table-wrapper">
+      <div class="table-title">
+        <div class="row">
+          <div class="col-sm-4">
+            <h2>Danh sách <b>Phản hồi</b></h2>
+          </div>
+          <div class="col-sm-8 text-right">
+            <div class="input-group mb-3">
+              <input type="text" maxlength="30" class="form-control" placeholder="Tìm kiếm người dùng"
+                     #searchKeyword>
+              <select class="form-control ml-1" #status>
+                <option selected value="not">Trạng thái</option>
+                <option value="true">Đã xử lý</option>
+                <option value="false">Chưa xử lý</option>
+              </select>
+              <div class="input-group-append">
+                <button class="btn btn-success" (click)="search(searchKeyword.value,status.value)"
+                        style="vertical-align: middle"
+                        type="submit">
+                  <i class="fa fa-search"></i>
+                  <span class="font-weight-bold">Tìm kiếm</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <table class="table table-striped mt-3">
+        <thead>
+        <tr>
+          <th scope="col">STT</th>
+          <th scope="col">Tên người dùng</th>
+          <th scope="col">Tiêu đề</th>
+          <th scope="col">Thời gian phản hồi</th>
+          <th scope="col">Tên phòng</th>
+          <th scope="col">Nội dung</th>
+          <th scope="col">Trạng thái</th>
+          <th scope="col" colspan="2">Thao tác</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let feedback of listFeedback  | slice: (page-1) * pageSize : page * pageSize; index as i">
+          <td scope="row">{{i + 1}}</td>
+          <ng-container *ngFor="let user of userList">
+            <td *ngIf="user.id==feedback.userFeedback">{{user.username}}</td>
+          </ng-container>
+          <td>{{feedback.feedbackTitle}}</td>
+          <td>{{feedback.feedbackTime | date:'dd/MM/yyyy hh:mm'}}</td>
+          <td *ngIf="feedback.meetingRoom == null; else roomNameOther">Trống</td>
+          <ng-template #roomNameOther>
+            <ng-container *ngFor="let room of roomList">
+              <td *ngIf="room.id==feedback.meetingRoom">{{room.name}}</td>
+            </ng-container>
+          </ng-template>
+          <td>{{feedback.feedbackContent | formatContent:0:40}}</td>
+          <td *ngIf="feedback.status; else other" colspan="2">Đã xử lý</td>
+          <ng-template #other>
+            <td>Chưa xử lý</td>
+            <td>
+              <button class="btn text-info"
+                      [routerLink]="['/phan-hoi/xu-ly-phan-hoi/',feedback.id]">
+                <i class="fas fa-tools"></i>
+              </button>
+            </td>
+          </ng-template>
+          <td>
+            <button class="text-danger btn" data-toggle="modal"
+                    data-toggle="modal" data-target="#exampleModal" (click)="sendIdToComponent(feedback.id)">
+              <i class="fas fa-times"></i>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="listFeedback.length == 0">
+          <td colspan="9" style="color: red; text-align: center; font-size: 20px">Không có phản hồi hợp lệ trong dữ
+            liệu.
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <div class="clearfix">
+        <div class="hint-text">Hiển thị <b>{{pageSize}}</b> trên <b>{{collectionSize}}</b> đối tượng</div>
+        <ngb-pagination class="d-flex justify-content-end"
+                        [(page)]="page"
+                        [pageSize]="pageSize"
+                        [collectionSize]="collectionSize"
+                        [maxSize]="5"
+                        [rotate]="true"
+                        [ellipses]="true"
+                        [boundaryLinks]="true">
+          <ng-template ngbPaginationFirst>Trang đầu</ng-template>
+          <ng-template ngbPaginationLast>Trang cuối</ng-template>
+          <ng-template ngbPaginationEllipsis>...</ng-template>
+          <ng-template ngbPaginationNumber let-page>{{ page }}</ng-template>
+        </ngb-pagination>
+      </div>
+    </div>
+  </div>
+</div>
+<ngx-bootstrap-spinner
+  bdColor="rgba(51,51,51,0.8)"
+  size="default"
+  color="#fff"
+  type="border"
+  loadingText="Đang tải dữ liệu..."
+>
+</ngx-bootstrap-spinner>
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title w-100 text-center" id="exampleModalLabel">Xóa người dùng </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có chắc chắn muốn xóa <span style="color: red">{{feedbackDeleteTitle}}</span>?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy bỏ</button>
+        <button type="button" class="btn btn-danger" (click)="deleteUser()" data-dismiss="modal">Xóa</button>
+      </div>
+    </div>
+  </div>
+</div>

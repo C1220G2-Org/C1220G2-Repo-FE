@@ -1,0 +1,306 @@
+<!-- -------------------------------------------------------------------- -->
+<div class="content">
+  <div class="container-fluid mt-2" style="min-height: 500px;">
+    <!-- title -->
+    <div class="row">
+      <div class="col-sm-12 text-center title">
+        <h2>Lịch Sử Đăng Ký</h2>
+      </div>
+    </div>
+    <!-- search field -->
+    <form [formGroup]="searchForm" (ngSubmit)="onSearchSubmit()">
+      <div class="row mt-2" style="font-size: 16px;">
+
+        <div class="col-sm" *ngIf="showAdminBoard">
+          <div class="form-group">
+            <label class="col-form-label" for="inputUserId">User:</label>
+            <select [formControl]="searchUserId" name="searchUserId" class="form-control" id="inputUserId">
+              <option value=0>Chọn</option>
+              <option *ngFor="let user of allUsers" [value]="user.id">{{ user.username }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-sm">
+          <div class="form-group">
+            <label for="inputRoomName" class="col-form-label">Tên phòng:</label>
+            <input type="text" [formControl]="roomName" name="roomName" class="form-control" id="inputRoomName"
+                   placeholder="Nhập tên phòng">
+            <div *ngIf="roomName.invalid" class="text-danger">
+              <small *ngIf="roomName.errors?.maxlength">
+                Tên phòng tối đa 10 ký tự.
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-3">
+          <div class="form-group">
+            <label for="inputStartDate" class="col-form-label">Ngày bắt đầu - Ngày kết thúc:</label>
+            <ejs-daterangepicker [formControl]="rangeDate" name="rangeDate" format='dd/MM/yyyy'
+                                 id="inputStartDate"></ejs-daterangepicker>
+          </div>
+        </div>
+
+        <div class="col-sm">
+          <div class="form-group">
+            <label class="col-form-label" for="inputStatus">Trạng thái:</label>
+            <select [formControl]="status" name="status" class="form-control" id="inputStatus">
+              <option value="">Chọn</option>
+              <option value="Chưa sử dụng">Chưa sử dụng</option>
+              <option value="Đang sử dụng">Đang sử dụng</option>
+              <option value="Đã sử dụng">Đã sử dụng</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-sm">
+          <div class="form-group">
+            <label for="inputBookingDate" class="col-form-label">Ngày đăng ký:</label>
+            <ejs-datepicker [formControl]="registrationDate" name="registrationDate" id="inputBookingDate"
+                            format="dd/MM/yyyy"></ejs-datepicker>
+          </div>
+        </div>
+
+        <div class="col-sm">
+          <div style="margin-top: 37px;">
+            <button type="submit" class="btn btn-primary"><i class="fa fa-search" aria-hidden="true"></i> Tìm kiếm
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="row mt-2">
+      <div class="col-sm table-responsive-sm">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th scope="col">STT</th>
+            <th scope="col">Tên phòng</th>
+            <th scope="col">Nội dung</th>
+            <th scope="col">Ngày đăng ký</th>
+            <th scope="col">Tầng</th>
+            <th scope="col">Trạng thái</th>
+            <th scope="col">Thời gian bắt đầu</th>
+            <th scope="col">Thời gian kết thúc</th>
+            <th scope="col">Ngày bắt đầu</th>
+            <th scope="col">Ngày kết thúc</th>
+            <th scope="col">Hủy</th>
+          </tr>
+          </thead>
+          <!-- Full list -->
+          <tbody id="table-body-full">
+          <tr *ngFor="let booking of bookingList | slice: (page-1) * pageSize : page * pageSize; let i = index">
+            <th scope="row">{{ i + 1 }}</th>
+            <td>{{ booking.roomName }}</td>
+            <td>{{ booking.content }}</td>
+            <td>{{ booking.registrationDate | date: 'dd/MM/yyyy' }}</td>
+            <td>{{ booking.floor }}</td>
+            <td *ngIf="booking.status === 'Chưa sử dụng'"><span class="badge badge-primary">{{ booking.status }}</span>
+            </td>
+            <td *ngIf="booking.status === 'Đã sử dụng'"><span class="badge badge-danger">{{ booking.status }}</span>
+            </td>
+            <td *ngIf="booking.status === 'Đang sử dụng'"><span class="badge badge-warning">{{ booking.status }}</span>
+            </td>
+            <td>{{ booking.startTime }}</td>
+            <td>{{ booking.endTime }}</td>
+            <td>{{ booking.startDate | date:'dd/MM/yyyy' }}</td>
+            <td>{{ booking.endDate | date:'dd/MM/yyyy' }}</td>
+            <td>
+              <div class="btn-cancel" style="font-size: 16px;">
+                <!-- button for not used yet -->
+                <a type="button" *ngIf='(booking.status == "Chưa sử dụng")'
+                   data-toggle="modal" data-target="#confirmCancelModal"
+                   (click)="setUpConfirmCancelModal(booking)">
+                  <i class="fas fa-times text-danger"></i>
+                </a>
+                <!-- button for already used -->
+                <a type="button" *ngIf='(booking.status == "Đã sử dụng") || (booking.status == "Đang sử dụng")'
+                   (click)="setUpConfirmCancelModal(booking)">
+                  <i class="fas fa-times text-danger"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- Paginator -->
+  <div class="clearfix">
+    <ngb-pagination class="d-flex justify-content-end"
+                    [(page)]="page"
+                    [pageSize]="pageSize"
+                    [collectionSize]="collectionSize"
+                    [maxSize]="5"
+                    [rotate]="true"
+                    [ellipses]="true"
+                    [boundaryLinks]="true">
+      <ng-template ngbPaginationFirst>Trang đầu</ng-template>
+      <ng-template ngbPaginationLast>Trang cuối</ng-template>
+      <ng-template ngbPaginationPrevious>Trước</ng-template>
+      <ng-template ngbPaginationNext>Sau</ng-template>
+      <ng-template ngbPaginationEllipsis>...</ng-template>
+      <ng-template ngbPaginationNumber let-page>{{ page }}</ng-template>
+    </ngb-pagination>
+  </div>
+
+
+  <!-- Confirm information modal -->
+  <div class="modal fade" id="confirmCancelModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title w-100 text-center" id="confirmCancelModalLabel">Hủy đăng ký phòng họp</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true" class="text-white">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" style="font-size: 16px;">
+          <form id="cancelForm" [formGroup]="confirmCancelForm" (ngSubmit)="onSubmitConfirmForm()">
+            <table class="table table-striped table-sm">
+              <tbody>
+              <!-- booking id -->
+              <!-- <input type="number" formControlName="roomBookingId"  [value]="cancelBooking.bookingId"> -->
+              <input type="text" formControlName="roomNameOfBooking" hidden>
+              <!-- <input type="number" formControlName="userIdOfBooking" [value]="cancelBooking.userId"> -->
+              <input type="number" formControlName="userIdOfBooking" hidden>
+              <input type="text" formControlName="cancellationTime" hidden>
+
+
+              <tr>
+                <td>
+                  <label for="roomName" class="col-form-label">Tên phòng họp:</label>
+                </td>
+                <td>
+                  <input type="text" readonly class="form-control-plaintext" id="roomName"
+                         [value]="cancelBooking.roomName">
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <label for="roomType" class="col-form-label">Loại phòng họp:</label>
+                </td>
+                <td>
+                  <input type="text" readonly class="form-control-plaintext" id="roomType"
+                         [value]="cancelBooking.meetingType">
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <label for="bookingDate" class="col-form-label">Ngày đăng ký:</label>
+                </td>
+                <td>
+                  <input type="text" readonly class="form-control-plaintext" id="bookingDate"
+                         [value]="cancelBooking.registrationDate">
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <label for="startTime" class="col-form-label">Thời gian bắt đầu:</label>
+                </td>
+                <td>
+                  <input type="text" readonly class="form-control-plaintext" id="startTime"
+                         [value]="cancelBooking.startTime">
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <label for="endTime" class="col-form-label">Thời gian kết thúc:</label>
+                </td>
+                <td>
+                  <input type="text" readonly class="form-control-plaintext" id="endTime"
+                         [value]="cancelBooking.endTime">
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <label for="startDate" class="col-form-label">Ngày bắt đầu:</label>
+                </td>
+                <td>
+                  <input type="text" readonly class="form-control-plaintext" id="startDate"
+                         [value]="cancelBooking.startDate">
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <label for="endDate" class="col-form-label">Ngày kết thúc:</label>
+                </td>
+                <td>
+                  <input type="text" readonly class="form-control-plaintext" id="endDate"
+                         [value]="cancelBooking.endDate">
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <label for="content" class="col-form-label">Lý do hủy
+                    <span class="text-danger" id="content">*</span>:
+                  </label>
+                </td>
+                <td>
+                  <textarea formControlName="cancellationReason" id="reason" cols="40" rows="5"></textarea>
+                  <!-- validation message -->
+                  <div *ngIf="cancellationReason.invalid || cancellationReason.untouched || cancellationReason.dirty"
+                       class="text-danger">
+                    <!-- class="alert alert-danger" -->
+                    <small *ngIf="cancellationReason.errors?.required">
+                      Bắt buộc nhập lý do hủy.
+                    </small>
+                    <small *ngIf="cancellationReason.errors?.minlength || cancellationReason.errors?.maxlength">
+                      Lý do hủy tối thiểu 5 ký tự và tối đa 100 ký tự.
+                    </small>
+                  </div>
+                </td>
+              </tr>
+
+              </tbody>
+            </table>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Trở về</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal"
+                  data-toggle="modal" data-target="#cancelModal" [disabled]="!confirmCancelForm.valid">Hủy đăng ký
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Confirm cancellation modal -->
+  <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+       aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-danger">
+          <h5 class="modal-title w-100 text-center text-white" id="exampleModalLabel">Hủy đăng ký phòng họp!!!</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Bạn chắc chắn muốn hủy lịch đặt cho phòng họp này không?
+          Nếu hủy bạn chỉ có thể đặt lại phòng họp này sau <span style="color: red">60 phút </span>nữa.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Không</button>
+          <button type="submit" class="btn btn-danger" form="cancelForm" onclick="$('#cancelModal').modal('hide')">Đồng
+            ý
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

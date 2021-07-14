@@ -1,0 +1,57 @@
+<div class="container-xl">
+  <div class="table-responsive">
+    <div class="table-wrapper">
+      <div class="table-title">
+        <div class="row">
+          <div class="col-sm-12">
+            <h2>Danh sách <b>Phản hồi</b></h2>
+          </div>
+        </div>
+      </div>
+      <table class="table table-striped mt-3">
+        <thead>
+        <tr>
+          <th scope="col">STT</th>
+          <th scope="col">Tên người dùng</th>
+          <th scope="col">Tiêu đề</th>
+          <th scope="col">Thời gian phản hồi</th>
+          <th scope="col">Nội dung</th>
+          <th scope="col">Trạng thái</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let feedback of listFeedback  | slice: (page-1) * pageSize : page * pageSize; index as i">
+          <td scope="row">{{i + 1}}</td>
+          <td>{{username}}</td>
+          <td>{{feedback.feedbackTitle}}</td>
+          <td>{{feedback.feedbackTime | date:'dd/MM/yyyy hh:mm'}}</td>
+          <td>{{feedback.feedbackContent}}</td>
+          <td *ngIf="feedback.status; else other" colspan="2">Đã xử lý</td>
+          <ng-template #other>
+            <td style="width: 15%">Chưa xử lý</td>
+          </ng-template>
+        </tr>
+        <tr *ngIf="length == 0">
+          <td class="text-center" colspan="6" style="color: red">Không có phản hồi nào được gửi đi.</td>
+        </tr>
+        </tbody>
+      </table>
+      <div class="clearfix">
+        <div class="hint-text">Hiển thị <b>{{pageSize}}</b> trên <b>{{collectionSize}}</b> đối tượng</div>
+        <ngb-pagination class="d-flex justify-content-end " style="float: right"
+                        [(page)]="page"
+                        [pageSize]="pageSize"
+                        [collectionSize]="collectionSize"
+                        [maxSize]="5"
+                        [rotate]="true"
+                        [ellipses]="true"
+                        [boundaryLinks]="true">
+          <ng-template ngbPaginationFirst>Trang đầu</ng-template>
+          <ng-template ngbPaginationLast>Trang cuối</ng-template>
+          <ng-template ngbPaginationEllipsis>...</ng-template>
+          <ng-template ngbPaginationNumber let-page>{{ page }}</ng-template>
+        </ngb-pagination>
+      </div>
+    </div>
+  </div>
+</div>

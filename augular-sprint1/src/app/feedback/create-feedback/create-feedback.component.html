@@ -1,0 +1,94 @@
+<div class="container register-form">
+  <div class="row justify-content-center align-items-center">
+    <div class="w-75 form">
+      <div class="col-md-12 form-content">
+        <div class="note">
+          <p style="font-size: 28px">Phản hồi phòng họp</p>
+        </div>
+        <form [formGroup]="feedbackForm" (ngSubmit)="submit()">
+          <div class="form-group">
+            <label for="title">Tiêu đề <span class="text-danger">*</span></label>
+            <input formControlName="feedbackTitle" type="text" class="form-control" id="title"/>
+            <span *ngIf="!feedbackTitle.valid && feedbackTitle.touched"
+                   [hidden]="!feedbackTitle.hasError('required')" class="text-danger">
+              Bạn phải nhập tiêu đề.
+            </span>
+            <span *ngIf="!feedbackTitle.valid && feedbackTitle.touched"
+                   [hidden]="!feedbackTitle.hasError('minlength')" class="text-danger">
+              Bạn phải nhập ít nhất 5 ký tự.
+            </span>
+            <span *ngIf="!feedbackTitle.valid && feedbackTitle.touched"
+                   [hidden]="!feedbackTitle.hasError('maxlength')" class="text-danger">
+              Bạn chỉ được nhập tối đa 20 ký tự.
+            </span>
+            <span *ngIf="!feedbackTitle.valid && feedbackTitle.touched"
+                   [hidden]="!feedbackTitle.hasError('pattern')" class="text-danger">
+              Bạn nhập không đúng định dạng.
+            </span>
+          </div>
+          <div class="form-group">
+            <label for="roomName">Tên phòng <span class="text-danger">*</span></label>
+            <select formControlName="meetingRoom" class="form-control" id="roomName">
+              <option value="">Chọn phòng</option>
+              <option *ngFor="let room of meetingList" [ngValue]="room.id">{{room.name}}</option>
+            </select>
+            <span *ngIf="!meetingRoom.valid && meetingRoom.touched" [hidden]="!meetingRoom.hasError('required')"
+                   class="text-danger">
+              Bạn phải chọn tên phòng.
+            </span>
+          </div>
+          <div class="form-group">
+            <label for="content">Nội dung</label>
+            <textarea formControlName="feedbackContent" class="form-control" id="content" rows="3"></textarea>
+            <span *ngIf="!feedbackContent.valid && feedbackContent.touched"
+                   [hidden]="!feedbackContent.hasError('required')" class="text-danger">
+              Bạn phải nhập nội dung.
+            </span>
+            <span *ngIf="!feedbackContent.valid && feedbackContent.touched"
+                   [hidden]="!feedbackContent.hasError('pattern')" class="text-danger">
+              Bạn nhập không đúng định dạng.
+            </span>
+            <span *ngIf="!feedbackContent.valid && feedbackContent.touched"
+                   [hidden]="!feedbackContent.hasError('minlength')" class="text-danger">
+              Bạn phải nhập ít nhất 5 ký tự.
+            </span>
+            <span *ngIf="!feedbackContent.valid && feedbackContent.touched"
+                   [hidden]="!feedbackContent.hasError('maxlength')" class="text-danger">
+              Bạn chỉ được nhập tối đa 500 ký tự.
+            </span>
+          </div>
+          <div class="form-group text-right">
+            <button type="reset" class="btn btnSubmitCancel">Hủy</button>
+            <button [disabled]="!feedbackForm.valid" type="submit" class="btn btnSubmit ml-1" data-keyboard="true"
+                    data-toggle="modal"
+                    data-target="#exampleModal">Gửi phản hồi
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div style="background: #6883A6; color: white" class="modal-header">
+        <h5 class="modal-title w-100 text-center" id="exampleModalLabel">Gửi phản hồi</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Bạn có chắc chắn muốn gửi phản hồi này?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="addFeedback()">Xác nhận</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+

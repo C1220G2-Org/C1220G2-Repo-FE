@@ -1,0 +1,79 @@
+<div class="container-fluid w-75">
+  <div class="card">
+    <div class="container-fluid">
+      <div class="note text-center mb-5">
+        <p style="font-size: 28px">Chi tiết phòng họp</p>
+      </div>
+      <div class="wrapper row mt-2">
+        <div class="preview col-md-6">
+          <div class="row">
+            <div id="carouselExampleControlsNoTouching" class="carousel slide" data-touch="false" data-interval="false">
+              <div class="carousel-inner">
+                <ng-container *ngIf="!(meetingRoom.images[0] == null || meetingRoom.images[0] == '')">
+                  <div class="carousel-item active" style="height: 380px">
+                    <img [src]="meetingRoom.images[0]" class="d-block w-100 h-100" alt="...">
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="!(meetingRoom.images[1] == null || meetingRoom.images[1] == '')">
+                  <div class="carousel-item" style="height: 380px">
+                    <img [src]="meetingRoom.images[1]" class="d-block w-100 h-100" alt="...">
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="!(meetingRoom.images[2] == null || meetingRoom.images[2] == '')">
+                  <div class="carousel-item" style="height: 380px">
+                    <img [src]="meetingRoom.images[2]" class="d-block w-100 h-100" alt="...">
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="!(meetingRoom.images[3] == null || meetingRoom.images[3] == '')">
+                  <div class="carousel-item" style="height: 380px">
+                    <img [src]="meetingRoom.images[3]" class="d-block w-100 h-100" alt="...">
+                  </div>
+                </ng-container>
+              </div>
+              <a class="carousel-control-prev" href="#carouselExampleControlsNoTouching" role="button"
+                 data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+              </a>
+              <a class="carousel-control-next" href="#carouselExampleControlsNoTouching" role="button"
+                 data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="details col-md-6">
+          <h3 class="price">Tên phòng họp: <span>{{meetingRoom.name}}</span></h3>
+          <h4 class="price">Số tầng: <span>{{meetingRoom.floor}}</span></h4>
+          <h4 class="price">Sức chứa: <span> {{meetingRoom.capacity}} người</span></h4>
+          <h4 class="price">Trạng thái: <span> {{meetingRoom.status}}</span></h4>
+          <h4 class="price">Số lần sử dụng: <span> {{meetingRoom.amountUse}}</span></h4>
+          <h5>Tài sản:</h5>
+          <table class="table table-striped table-hover mt-2 ">
+            <thead>
+            <tr>
+              <th>STT</th>
+              <th>Tên tài sản</th>
+              <th>Số lượng</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let property of meetingRoom.propertyDtoList; index as i">
+              <th>{{i + 1}}</th>
+              <td>{{property.name}}</td>
+              <td><span class="badge badge-success badge-pill"
+                        style="font-size: 16px">{{property.amount}}</span></td>
+            </tr>
+            </tbody>
+          </table>
+          <div class="action">
+            <button class="btn btnSubmitCancel" type="button" [routerLink]="['/nguoi-dung/lich-su-dat-phong',user.id]">
+              Xem lịch sử đăng ký
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

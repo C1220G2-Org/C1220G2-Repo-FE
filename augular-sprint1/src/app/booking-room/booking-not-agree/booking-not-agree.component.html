@@ -1,0 +1,23 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<div id="container">
+  <div class="product-details">
+    <h3 style="font-family: Roboto">Đã <span style="color: red"> từ chối</span> đăng ký lịch họp của người dùng </h3>
+    <p class="information" style="text-align: left"><br>
+      <span> Tên phòng:      </span> {{this.meetingRoomName}} <br><br>
+      <span> ngày đặt:      </span> <br> {{this.startDateVariable|date:'dd/MM/y'}}
+      đến {{this.endDateVariable|date:'dd/MM/y'}} <br><br>
+      <span> giờ đặt:       </span> {{this.startHourVariable}}  đến {{this.endHourVariable}}
+    </p>
+  </div>
+  <div class="product-image">
+    <img [src]="this.user.avatar" alt="">
+    <div class="info">
+      <h2> Thông tin người dùng</h2>
+      <ul>
+        <li><strong> Tên : </strong>{{this.user.name}} </li>
+        <li><strong>Vị trí : </strong>{{this.user.department.name}}</li>
+        <li><strong>email: </strong>{{this.user.email}}</li>
+      </ul>
+    </div>
+  </div>
+</div>
