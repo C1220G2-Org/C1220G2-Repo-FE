@@ -1,0 +1,109 @@
+<div class="container-xl">
+  <div class="table-responsive">
+    <div class="table-wrapper">
+      <div class="table-title">
+        <div class="row">
+          <div class="col-sm-6">
+            <h2>Quản lý <b>Phòng họp</b></h2>
+          </div>
+          <div class="col-sm-4 text-right">
+            <div class="input-group mb-3">
+              <input type="text" class="form-control"  id="tenphong" placeholder="Tìm kiếm..." (change)=setNameSearch($event)>
+              <div class="input-group-append">
+                <button class="btn btn-success" style="vertical-align: middle" type="submit"><i
+                  class="fa fa-search"></i> <span
+                  class="font-weight-bold" (click)="listSearch()">Tìm kiếm</span></button>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-2" *ngIf="showAdminBoard">
+            <a routerLink="/phong-hop/tao-moi" class="btn btn-secondary" style="height: 38px;vertical-align: middle"><i
+              class="material-icons">&#xE147;</i>
+              <span style="font-weight: bold">Thêm mới</span></a>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <ng-container *ngIf="messageSearch != ''; else elseBlock">
+          <h3 style="color: red; text-align: center; width: 100%; margin-top: 50px">{{messageSearch}}</h3>
+        </ng-container>
+        <ng-template #elseBlock>
+          <table class="table table-striped table-hover" style="background-color: rgba(244,255,252,0.68)!important;">
+            <thead>
+            <tr>
+              <th class="w-15">STT</th>
+              <th class="w-15">Tên phòng</th>
+              <th class="w-15">Tầng</th>
+              <th class="w-15">Trạng thái</th>
+              <th class="w-15">Sức chứa</th>
+              <ng-container *ngIf="showUserBoard">
+                <th colspan="2" class="text-center">Xem chi tiết</th>
+              </ng-container>
+              <ng-container *ngIf="showAdminBoard">
+                <th colspan="3" class="text-center">Thao tác</th>
+              </ng-container>
+            </tr>
+            </thead>
+            <tbody>
+            <tr
+              *ngFor="let meetingRoom of meetingRoomList | slice: (page-1) * pageSize : page * pageSize ;  index as i">
+              <th scope="row">{{i + 1}}</th>
+              <td><p>{{meetingRoom.name}}</p></td>
+              <td><p style="margin-left: 10px">{{meetingRoom.floor}}</p></td>
+              <td><p>{{meetingRoom.status}}</p></td>
+              <td><p>{{meetingRoom.capacity}} người</p></td>
+              <td class="text-center">
+                <a class="btn text-success settings" [routerLink]="['/phong-hop/chi-tiet/',meetingRoom.id]"><i
+                  class="far fa-eye"></i></a>
+                <a class="btn text-warning" *ngIf="showAdminBoard"
+                   [routerLink]="['/phong-hop/cap-nhat',meetingRoom.id]"><i class="fas fa-pencil-alt"></i></a>
+                <button class="btn text-danger" *ngIf="showAdminBoard" data-toggle="modal"
+                        data-target="#exampleModal" (click)="passData(meetingRoom.id, meetingRoom.name)">
+                  <i class="fas fa-times"></i>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </ng-template>
+      </div>
+      <div class="clearfix">
+        <div class="hint-text">Hiển thị <b>{{pageSize}}</b> trên <b>{{meetingRoomList.length}}</b> đối tượng</div>
+        <ngb-pagination class="d-flex justify-content-end"
+                        [(page)]="page"
+                        [pageSize]="pageSize"
+                        [collectionSize]="meetingRoomList.length"
+                        [maxSize]="5"
+                        [rotate]="true"
+                        [ellipses]="true"
+                        [boundaryLinks]="true">
+          <ng-template ngbPaginationFirst>Trang đầu</ng-template>
+          <ng-template ngbPaginationLast>Trang cuối</ng-template>
+          <ng-template ngbPaginationEllipsis>...</ng-template>
+          <ng-template ngbPaginationNumber let-page>{{ page }}</ng-template>
+        </ngb-pagination>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal Delete -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-danger">
+        <h5 class="modal-title w-100 text-white text-center" id="exampleModalLabel">Xóa Phòng</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Bạn có muốn xóa phòng họp <span style="color: red">{{this.nameDelete}}</span>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="deleteMeetingRoom()">Xóa</button>
+      </div>
+    </div>
+  </div>
+</div>

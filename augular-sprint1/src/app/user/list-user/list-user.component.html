@@ -1,0 +1,120 @@
+<div class="container-xl">
+  <div class="table-responsive">
+    <div class="table-wrapper">
+      <div class="table-title">
+        <div class="row">
+          <div class="col-sm-6">
+            <h2>Quản lý <b>Người dùng</b></h2>
+          </div>
+          <div class="col-sm-4 text-right">
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" #searchKeyword placeholder="Tìm kiếm...">
+              <div class="input-group-append">
+                <button class="btn btn-success" (click)="searchUser(searchKeyword.value)" style="vertical-align: middle"
+                        type="submit">
+                  <i class="fa fa-search"></i>
+                  <span class="font-weight-bold">Tìm kiếm</span></button>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-2">
+            <button routerLink="/nguoi-dung/tao-moi" style="height: 38px; vertical-align: middle"
+                    class="btn btn-secondary"><i class="material-icons">&#xE147;</i>
+              <span style="font-weight: bold">Thêm mới</span></button>
+          </div>
+        </div>
+      </div>
+      <ng-container *ngIf="messageError != ''; else elseBlock">
+        <h3 style="color: red; text-align: center; width: 100%; margin-top: 50px">{{messageError}}</h3>
+      </ng-container>
+      <ng-template #elseBlock>
+        <table class="table table-striped mt-3">
+          <thead>
+          <tr>
+            <th scope="col" class="no-col">STT</th>
+            <th scope="col">Tên đăng nhập</th>
+            <th scope="col">Quyền truy cập</th>
+            <th scope="col">Họ và tên</th>
+            <th scope="col">Email</th>
+            <th scope="col">Bộ phận</th>
+            <th scope="col" colspan="2" class="text-center">Thao tác</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let user of userList | slice: (page-1) * pageSize : page * pageSize;index as i">
+            <th>{{i + 1}}</th>
+            <td>{{user.username}}</td>
+            <td *ngIf="user.roles[0].id == 2"><span class="badge badge-primary badge-pill"
+                                                    style="font-size: 16px">User</span></td>
+            <td *ngIf="user.roles[0].id == 1"><span class="badge badge-secondary badge-pill"
+                                                    style="font-size: 16px">Admin</span></td>
+            <td>{{user.name}}</td>
+            <td>{{user.email}}</td>
+            <td>{{user.department.name}}</td>
+            <td>
+              <a class="btn text-warning settings" [routerLink]="['/nguoi-dung/cap-nhat', user.id]"><i
+                class="fas fa-pencil-alt"></i></a>
+              <a class="btn text-danger delete" data-toggle="modal"
+                 data-toggle="modal" data-target="#exampleModal" (click)="sendIdToComponent(user.id)">
+                <i class="fas fa-times"></i>
+              </a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </ng-template>
+      <div class="clearfix">
+        <div class="hint-text">Hiển thị <b>{{pageSize}}</b> trên <b>{{userList.length}}</b> đối tượng</div>
+        <ngb-pagination class="d-flex justify-content-end"
+                        [(page)]="page"
+                        [pageSize]="pageSize"
+                        [collectionSize]="userList.length"
+                        [maxSize]="5"
+                        [rotate]="true"
+                        [ellipses]="true"
+                        [boundaryLinks]="true">
+          <ng-template ngbPaginationFirst>Trang đầu</ng-template>
+          <ng-template ngbPaginationLast>Trang cuối</ng-template>
+          <ng-template ngbPaginationEllipsis>...</ng-template>
+          <ng-template ngbPaginationNumber let-page>{{ page }}</ng-template>
+        </ngb-pagination>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger">
+        <h4 class="modal-title w-100 text-center text-white" id="exampleModalLabel">Xóa người dùng </h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Bạn có chắc chắn muốn xóa <span
+          style
+            ="color: red">{{userDelete}}</span>?</p>
+      </div>
+      <div
+        class
+          ="modal-footer">
+        <button
+          type
+            ="button" class="btn btn-secondary" data-dismiss="modal">Hủy bỏ
+        </button>
+        <button type="button" class="btn btn-danger" (click)="deleteUser()" data-dismiss="modal">
+          Xóa
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<ngx-bootstrap-spinner
+  bdColor="rgba(51,51,51,0.8)"
+  size="default"
+  color="#fff"
+  type="border"
+  loadingText="Đang tải dữ liệu..."
+>
+</ngx-bootstrap-spinner>

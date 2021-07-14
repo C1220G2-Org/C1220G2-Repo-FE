@@ -1,0 +1,147 @@
+<div class="container register-form">
+  <div class="row justify-content-center align-items-center">
+    <div class="w-75 form">
+      <div class="col-md-12 form-content">
+        <div class="note">
+          <p style="font-size: 28px">Chỉnh sửa tài sản</p>
+        </div>
+        <form [formGroup]="propertiesForm" *ngIf="propertiesForm" (ngSubmit)="updateProperty()">
+          <div class="form-group">
+            <label for="nameAsset">Tên tài sản <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="nameAsset" formControlName="name"/>
+            <div class="text-danger" *ngIf="form.name.hasError('required') && form.name.touched">
+              Vui lòng nhập tên tài sản.
+            </div>
+            <div class="text-danger" *ngIf="form.name.hasError('pattern')">
+              Vui lòng nhập tên tài sản bắt đầu là chữ cái và viết hoa chữ cái đầu.
+            </div>
+            <div class="text-danger" *ngIf="form.name.hasError('maxlength')">
+              Vui lòng nhập tên tài sản không quá 100 kí tự.
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="detailAsset">Mô tả <span class="text-danger">*</span></label>
+            <textarea class="form-control" id="detailAsset" formControlName="detail"> </textarea>
+            <div class="text-danger" *ngIf="form.detail.hasError('required') && form.detail.touched">Mô tả tài sản
+              không nên để trống.
+            </div>
+            <div class="text-danger" *ngIf="form.detail.hasError('maxlength')">
+              Vui lòng nhập mô tả không quá 500 kí tự.
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="amountAsset">Số lượng <span class="text-danger">*</span> ( cái )</label>
+                <input type="text" class="form-control" id="amountAsset" formControlName="amount"/>
+                <div class="text-danger" *ngIf="form.amount.hasError('required') && form.amount.touched">Vui lòng nhập
+                  số lượng tài sản .
+                </div>
+                <div class="text-danger" *ngIf="form.amount.hasError('pattern')">
+                  Vui lòng nhập số lượng phải lớn hơn 0,không nhập số thập phân,không nhập chữ cái.
+                </div>
+                <div class="text-danger" *ngIf="form.amount.hasError('maxlength')">
+                  Vui lòng nhập số lượng không quá 100 kí tự.
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="price">Giá <span class="text-danger">*</span>( VNĐ) </label>
+                <input type="text" class="form-control" id="price" formControlName="price"/>
+                <div class="text-danger" *ngIf="form.price.hasError('required')&& form.price.touched">Vui lòng nhập giá
+                  tài sản.
+                </div>
+                <div class="text-danger" *ngIf="form.price.hasError('pattern')">
+                  Vui lòng giá tiền không được nhập số âm, số thập phân và chữ cái.
+                </div>
+                <div class="text-danger" *ngIf="form.price.hasError('maxlength')">
+                  Vui lòng nhập giá tiền không quá 100 kí tự.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="maintenance">Đang sửa chữa <span class="text-danger">*</span> ( cái )</label>
+                <input type="text" class="form-control" id="maintenance" formControlName="maintenance"/>
+                <div class="text-danger" *ngIf="form.maintenance.hasError('required') && form.maintenance.touched">
+                  Tài
+                  sản sửa chữa không được để trống.
+                </div>
+                <div class="text-danger" *ngIf="form.maintenance.hasError('pattern')">
+                  Số lượng đang không được nhập số âm,kí tự, số thập phân.
+                </div>
+                <div class="text-danger" *ngIf="form.maintenance.hasError('compare')">
+                  Số lượng đang sửa chữa không được lớn hơn số lượng khả dụng.
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="availability">Khả dụng ( cái )</label>
+                <input type="number" class="form-control" id="availability"
+                       formControlName="availability" readonly/>
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col-2"><label>Hình ảnh <span class="text-danger">*</span></label></div>
+            <div class="col-10">
+              <div>
+                <label class="btn btnAddImage" for="images"><i class="fas fa-images"></i> Thêm ảnh</label>
+                <input hidden style="border: none" id="images" class="form-control"
+                       formControlName="image"
+                       type="file"
+                       (change)="showPreview($event)"
+                       accept=".jpg,.jpeg,.png" multiple/>
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col-2"></div>
+            <div class="col-10">
+              <div class="row">
+                <div class="col">
+                  <ng-container *ngIf="!(arrImage[0] == '' || arrImage[0] == null)">
+                    <img src="{{arrImage[0]}}" alt="" style="width: 250px; height: 140px">
+                  </ng-container>
+                </div>
+                <div class="col">
+                  <ng-container *ngIf="!(arrImage[1] == '' || arrImage[1] == null)">
+                    <img src="{{arrImage[1]}}" alt="" style="width: 250px; height: 140px">
+                  </ng-container>
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col">
+                  <ng-container *ngIf="!(arrImage[2] == '' || arrImage[2] == null)">
+                    <img src="{{arrImage[2]}}" alt="" style="width: 250px; height: 140px">
+                  </ng-container>
+                </div>
+                <div class="col">
+                  <ng-container *ngIf="!(arrImage[3] == '' || arrImage[3] == null)">
+                    <img src="{{arrImage[3]}}" alt="" style="width: 250px; height: 140px">
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-right mt-4">
+            <button class="btn btnSubmitCancel" (click)="onBack()">Hủy</button>
+            <button class="btn btnSubmit ml-1" [disabled]="!propertiesForm.valid">Cập nhật</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<ngx-bootstrap-spinner
+  bdColor="rgba(51,51,51,0.8)"
+  size="default"
+  color="#fff"
+  type="border"
+  loadingText="Đang tải..."
+>
+</ngx-bootstrap-spinner>

@@ -1,0 +1,74 @@
+<script src="node_modules/chart.js/src/chart.js"></script>
+<!-- title -->
+<div class="row">
+  <div class="table-responsive">
+    <div class="row mt-2" style="font-size: 16px;">
+      <div class="col-sm"></div>
+      <div class="col-sm">
+        <div class="row">
+          <div class="col-sm">
+            <div class="form-group">
+              <label for="startDate" class="col-form-label">Ngày bắt đầu:</label>
+              <input type="date" [(ngModel)]="startDate" name="roomName" class="form-control" id="startDate"
+                     placeholder="Nhập tên phòng">
+            </div>
+          </div>
+          <div class="col-sm">
+            <label for="startDate" class="col-form-label">Ngày kết thúc:</label>
+            <input type="date" [(ngModel)]="endDate" name="roomName" class="form-control" id="endDate"
+                   placeholder="Nhập tên phòng">
+          </div>
+          <div class="col-sm">
+            <div style="margin-top:40px">
+              <button (click)="onSubmit()" class="btn btn-primary" type="submit">Thống Kê</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm"></div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-sm-2"></div>
+      <div class="col-sm table-responsive-sm">
+        <table class="table table-striped">
+          <thead class="thead-inverse">
+          <tr style="background-color: #6883A6; color: white; ">
+            <th>STT</th>
+            <th>Tên phòng</th>
+            <th>Ngày bắt đầu</th>
+            <th>Ngày kết thúc</th>
+            <th>Số lần đặt</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let c of statistics  | paginate:{itemsPerPage: 5, currentPage:page }; index as i ">
+            <td>{{i + 1}}</td>
+            <td>{{c.name}}</td>
+            <td>{{startDate}}</td>
+            <td>{{endDate }}</td>
+            <td>{{c.count }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-sm-2"></div>
+    </div>
+  </div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-2"></div>
+      <div class="col-8">
+        <div style="display: flex">
+          <canvas baseChart
+                  [datasets]="barChartData"
+                  [labels]="barChartLabels"
+                  [options]="barChartOptions"
+                  [legend]="barChartLegend"
+                  [chartType]="barChartType">
+          </canvas>
+        </div>
+      </div>
+      <div class="col-2"></div>
+    </div>
+  </div>
+</div>

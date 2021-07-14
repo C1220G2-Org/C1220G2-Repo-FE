@@ -1,0 +1,123 @@
+<div class="container register-form">
+  <div class="row justify-content-center align-items-center">
+    <div class="w-75 form">
+      <div class="col-md-12 form-content">
+        <div class="note">
+          <p style="font-size: 28px">Thêm mới tài sản</p>
+        </div>
+        <form [formGroup]="propertiesForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="nameAsset">Tên tài sản <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="nameAsset" formControlName="name"/>
+            <span class="text-danger" *ngIf="form.name.hasError('required') && form.name.touched">
+              Vui lòng nhập tên tài sản.
+            </span>
+            <span class="text-danger" *ngIf="form.name.hasError('pattern')">
+              Vui lòng nhập tên tài sản bắt đầu là chữ cái và viết hoa chữ cái đầu.
+            </span>
+            <span class="text-danger" *ngIf="form.name.hasError('maxlength')">
+              Vui lòng nhập tên tài sản không quá 100 kí tự.
+            </span>
+          </div>
+          <div class="row mt-2">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="amountAsset">Số lượng <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="amountAsset" formControlName="amount"/>
+                <span class="text-danger" *ngIf="form.amount.hasError('required') && form.amount.touched">Vui lòng nhập
+                  số lượng tài sản .
+                </span>
+                <span class="text-danger" *ngIf="form.amount.hasError('pattern')">
+                  Vui lòng nhập số lượng phải lớn hơn 0,không nhập số thập phân,không nhập chữ cái.
+                </span>
+                <span class="text-danger" *ngIf="form.amount.hasError('maxlength')">
+                  Vui lòng nhập số lượng không quá 100 kí tự.
+                </span>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label for="price">Giá <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="price" formControlName="price" [(ngModel)]="priceTemp"/>
+                <ng-container>Giá : {{priceTemp | number:'4.0'}} vnđ</ng-container>
+                <span class="text-danger" *ngIf="form.price.hasError('required')&& form.price.touched">Vui lòng nhập giá
+                  tài sản.
+                </span>
+                <span class="text-danger" *ngIf="form.price.hasError('pattern')">
+                  Vui lòng giá tiền không được nhập số âm, số thập phân và chữ cái.
+                </span>
+                <span class="text-danger" *ngIf="form.price.hasError('maxlength')">
+                  Vui lòng nhập giá tiền không quá 100 kí tự.
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="detailAsset">Mô tả <span class="text-danger">*</span></label>
+            <textarea class="form-control" id="detailAsset" formControlName="detail"> </textarea>
+            <span class="text-danger" *ngIf="form.detail.hasError('required') && form.detail.touched">Vui lòng nhập mô tả
+              tài sản.
+            </span>
+            <span class="text-danger" *ngIf="form.detail.hasError('maxlength')">
+              Vui lòng nhập mô tả không quá 500 kí tự.
+            </span>
+          </div>
+          <div class="form-row">
+            <div class="col-2"><label>Hình ảnh <span class="text-danger">*</span></label></div>
+            <div class="col-10">
+              <div>
+                <label class="btn btnAddImage" for="images"><i class="fas fa-images"></i> Thêm ảnh</label>
+                <input hidden style="border: none" id="images" class="form-control"
+                       formControlName="image"
+                       type="file"
+                       (change)="showPreview($event)"
+                       accept=".jpg,.jpeg,.png" multiple/>
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="col-2"></div>
+            <div class="col-10">
+              <div class="row">
+                <div class="col">
+                  <ng-container *ngIf="!(arrImage[0] == '' || arrImage[0] == null)">
+                    <img src="{{arrImage[0]}}" alt="" style="width: 250px; height: 140px">
+                  </ng-container>
+                </div>
+                <div class="col">
+                  <ng-container *ngIf="!(arrImage[1] == '' || arrImage[1] == null)">
+                    <img src="{{arrImage[1]}}" alt="" style="width: 250px; height: 140px">
+                  </ng-container>
+                </div>
+              </div>
+              <div class="row mt-2">
+                <div class="col">
+                  <ng-container *ngIf="!(arrImage[2] == '' || arrImage[2] == null)">
+                    <img src="{{arrImage[2]}}" alt="" style="width: 250px; height: 140px">
+                  </ng-container>
+                </div>
+                <div class="col">
+                  <ng-container *ngIf="!(arrImage[3] == '' || arrImage[3] == null)">
+                    <img src="{{arrImage[3]}}" alt="" style="width: 250px; height: 140px">
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group mt-3 text-right">
+            <input type="reset" class="btn btnSubmitCancel" value="Hủy" (click)="onBack()">
+            <input type="submit" class="btn btnSubmit ml-1" [disabled]="!propertiesForm.valid" value="Thêm mới">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<ngx-bootstrap-spinner
+  bdColor="rgba(51,51,51,0.8)"
+  size="default"
+  color="#fff"
+  type="border"
+  loadingText="Đang tải..."
+>
+</ngx-bootstrap-spinner>

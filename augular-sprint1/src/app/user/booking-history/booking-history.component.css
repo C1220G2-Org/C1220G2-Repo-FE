@@ -1,0 +1,14 @@
+.content {
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+}
+
+thead {
+  background-color: #6883A6;
+  color: white;
+}
+
+.modal-header {
+  background-color: #6883A6;
+  color: white;
+}

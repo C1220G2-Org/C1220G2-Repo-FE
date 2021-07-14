@@ -1,0 +1,127 @@
+<div class="container-xl">
+  <div class="table-responsive">
+    <div class="table-wrapper">
+      <div class="table-title">
+        <div class="row">
+          <div class="col-sm-6">
+            <h2>Quản lý <b>Tài sản</b></h2>
+          </div>
+          <div class="col-sm-4 text-right">
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" #search [(ngModel)]="negative" placeholder="Tìm kiếm...">
+              <small *ngIf="search.value <0"> <span class="text-danger"> Số lượng không được nhập số âm</span></small>
+              <div class="input-group-append">
+                <button class="btn btn-success" (click)="searchProperty(search.value)" style="vertical-align: middle"
+                        type="submit">
+                  <i class="fa fa-search"></i>
+                  <span class="font-weight-bold">Tìm kiếm</span></button>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-2">
+            <button routerLink="/tai-san/tao-moi" style="height: 38px; vertical-align: middle"
+                    class="btn btn-secondary"><i class="material-icons">&#xE147;</i>
+              <span style="font-weight: bold">Thêm mới</span></button>
+          </div>
+        </div>
+      </div>
+      <ng-container *ngIf="messageSearch != ''; else elseBlock">
+        <h3 style="color: red; text-align: center; width: 100%; margin-top: 50px">{{messageSearch}}</h3>
+      </ng-container>
+      <ng-template #elseBlock>
+        <table class="table table-striped table-hover" style="background-color: rgba(244,255,252,0.68)!important;">
+          <thead>
+          <tr>
+            <th scope="col">STT</th>
+            <th scope="col">Tài Sản</th>
+            <th scope="col">Tổng số ( cái )</th>
+            <th scope="col">Đang sử dụng ( cái )</th>
+            <th scope="col">Sửa chữa</th>
+            <th scope="col">Khả dụng</th>
+            <th scope="col" *ngIf="showAdminBoard" colspan="3" class="text-center">Thao tác</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let property of propertiesList | slice: (page-1) * pageSize : page * pageSize;index as i">
+            <th>{{i + 1}}</th>
+            <td>{{property.name}}</td>
+            <td class="text-center"><span class="badge badge-primary badge-pill"
+                                          style="font-size: 16px">{{property.amount}}</span></td>
+            <td class="text-center"><span class="badge badge-success badge-pill"
+                                          style="font-size: 16px">{{property.usingProperty}}</span></td>
+            <td class="text-center"><span class="badge badge-warning badge-pill"
+                                          style="font-size: 16px">{{property.maintenance}}</span></td>
+            <td class="text-center"><span class="badge badge-secondary badge-pill"
+                                          style="font-size: 16px">{{property.availability}}</span></td>
+            <td class="text-center" *ngIf="showAdminBoard">
+              <a class="btn text-info " style="font-size: 1.3rem" [routerLink]="['/tai-san/chi-tiet/',property.id]"><i
+                class="far fa-eye"></i></a>
+              <a class="btn text-warning" style="font-size: 1.3rem" [routerLink]="['/tai-san/chinh-sua/', property.id]">
+                <i class="fas fa-pencil-alt"></i></a>
+              <a class="btn text-danger" style="font-size: 1.3rem" data-toggle="modal"
+                 data-target="#exampleModal" (click)="send(property.id)">
+                <i class="fas fa-times"></i>
+              </a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </ng-template>
+      <div class="clearfix">
+        <div class="hint-text">Hiển thị <b>{{pageSize}}</b> trên <b>{{propertiesList.length}}</b> đối tượng</div>
+        <ngb-pagination class="d-flex justify-content-end"
+                        [(page)]="page"
+                        [pageSize]="pageSize"
+                        [collectionSize]="propertiesList.length"
+                        [maxSize]="4"
+                        [rotate]="true"
+                        [ellipses]="true"
+                        [boundaryLinks]="true">
+          <ng-template ngbPaginationFirst>Trang đầu</ng-template>
+          <ng-template ngbPaginationLast>Trang cuối</ng-template>
+          <ng-template ngbPaginationEllipsis>...</ng-template>
+          <ng-template ngbPaginationNumber let-page>{{ page }}</ng-template>
+        </ngb-pagination>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger">
+        <h4 class="modal-title w-100 text-center text-white" id="exampleModalLabel">Xóa tài sản </h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <ng-container *ngIf="!usingProperty">
+        <div class="modal-body">
+          Bạn có muốn xóa <span style="color:red;">{{name}}</span> ?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="deleteProperty()">Xóa</button>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="!!usingProperty">
+        <div class="modal-body">
+          <span style="color:red;">{{name}}</span> đang được sử dụng , bạn không thể xóa chúng đi ?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+<ngx-bootstrap-spinner
+  bdColor="rgba(51,51,51,0.8)"
+  size="default"
+  color="#fff"
+  type="border"
+  loadingText="Đang tải dữ liệu..."
+>
+</ngx-bootstrap-spinner>

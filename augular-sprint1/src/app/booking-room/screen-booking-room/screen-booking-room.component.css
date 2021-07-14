@@ -1,0 +1,55 @@
+/* To disable the cell click action in schedule */
+.e-disable-dates {
+  pointer-events: none;
+}
+
+/* To enable showing event quick info popup action on month view */
+.e-disable-dates .e-appointment-wrapper {
+  pointer-events: all;
+}
+
+.e-quick-popup-wrapper .e-event-popup .e-popup-header .e-header-icon-wrapper .e-edit, .e-quick-popup-wrapper .e-event-popup .e-popup-header .e-header-icon-wrapper .e-delete {
+  display: none;
+}
+
+.e-event-details {
+  display: none;
+}
+
+.e-schedule .e-month-view .e-work-cells {
+  position: relative;
+  height: 120px !important;
+}
+
+.e-schedule .templatewrap {
+  text-align: center;
+  position: absolute;
+  width: 100%;
+}
+
+.e-schedule .templatewrap img {
+  width: 60px;
+  height: 60px;
+}
+
+.e-schedule .caption {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+.scheduler-shadow {
+  border-radius: 1%;
+  box-shadow: 0 2px 12px 0 rgba(73, 78, 70, 0.68);
+}
+
+ul li {
+  list-style-type: none;
+}
+
+.scroll-to-top {
+  position: fixed;
+  bottom: 60px;
+  right: 10px;
+  cursor: pointer;
+}

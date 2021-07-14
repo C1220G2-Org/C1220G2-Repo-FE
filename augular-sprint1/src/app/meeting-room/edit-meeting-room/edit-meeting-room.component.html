@@ -1,0 +1,212 @@
+<div class="container register-form">
+  <div class="row justify-content-center align-items-center">
+    <div class="w-75 form">
+      <div class="col-md-12 form-content">
+        <div class="note">
+          <p style="font-size: 28px">Sửa đổi phòng họp</p>
+        </div>
+        <form [formGroup]="meetingRoomForm" (ngSubmit)="submitForm()" *ngIf="meetingRoomForm">
+          <div class="form-group">
+            <label for="tenphong">Tên phòng <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="tenphong" formControlName="name"/>
+            <span style="color: red"
+                  *ngIf="meetingRoomForm.controls.name.hasError('required')
+         && meetingRoomForm.controls.name.dirty">
+              Tên phòng không được để trống.</span>
+            <span style="color: red"
+                  *ngIf="meetingRoomForm.controls.name.hasError('maxlength')
+         && meetingRoomForm.controls.name.dirty">
+              Tên phòng không được quá 30 kí tự.</span>
+            <span style="color: red"
+                  *ngIf="meetingRoomForm.controls.name.hasError('pattern')
+         && meetingRoomForm.controls.name.dirty">
+              Tên phòng không được có kí tự đặc biệt, tên phải viết hoa chữ đầu tiên.</span>
+            <span class="span text-danger"
+                  *ngIf="messageName != ''">
+              Phòng đã tồn tại, vui lòng nhập tên khác !
+            </span>
+          </div>
+          <div class="form-group">
+            <label for="tang">Tầng <span class="text-danger">*</span></label>
+            <input type="number" class="form-control" id="tang" formControlName="floor"/>
+            <span style="color: red"
+                  *ngIf="meetingRoomForm.controls.floor.hasError('required')
+         && meetingRoomForm.controls.floor.dirty">
+              Tầng không được để trống.</span>
+            <span style="color: red"
+                  *ngIf="meetingRoomForm.controls.floor.hasError('checkinteger')
+         && meetingRoomForm.controls.floor.dirty">
+              Tầng phải là số nguyên dương (>1).</span>
+          </div>
+
+          <div class="form-group">
+            <label for="trangthai">Trạng thái</label>
+            <select class="form-control" id="trangthai" formControlName="status">
+              <option value="Có thể sử dụng">Có thể sử dụng</option>
+              <option value="Hỏng">Hỏng</option>
+              <option value="Đang sửa">Đang sửa</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="succhua">Sức chứa <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="succhua" formControlName="capacity"/>
+            <span style="color: red"
+                  *ngIf="meetingRoomForm.controls.capacity.hasError('required')
+         && meetingRoomForm.controls.capacity.dirty">
+              Sức chứa không được để trống.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="images">Thêm ảnh <span class="text-danger">*</span> </label>
+            <label class="btn btn-success ml-4" for="images"><i class="fas fa-images"></i> Thêm ảnh</label>
+            <ng-container *ngIf="messageCheckFileImage1 !='' ">
+              <p style="color: red">{{messageCheckFileImage1}}</p>
+            </ng-container>
+            <input hidden style="border: none" id="images" class="form-control"
+                   type="file"
+                   (change)="chooseImage($event)"
+                   accept=".jpg,.jpeg,.png" multiple/>
+            <div class="row text-right">
+              <div class="col">
+                <ng-container *ngIf="!(images[0] == '' || images[0] == null)">
+                  <img src="{{images[0]}}" alt="" style="width: 250px; height: 140px">
+                </ng-container>
+              </div>
+              <div class="col">
+                <ng-container *ngIf="!(images[1] == '' || images[1] == null)">
+                  <img src="{{images[1]}}" alt="" style="width: 250px; height: 140px">
+                </ng-container>
+              </div>
+            </div>
+            <div class="row mt-2 text-right">
+              <div class="col">
+                <ng-container *ngIf="!(images[2] == '' || images[2] == null)">
+                  <img src="{{images[2]}}" alt="" style="width: 250px; height: 140px">
+                </ng-container>
+              </div>
+              <div class="col">
+                <ng-container *ngIf="!(images[3] == '' || images[3] == null)">
+                  <img src="{{images[3]}}" alt="" style="width: 250px; height: 140px">
+                </ng-container>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="taisan">Tài sản <span class="text-danger">*</span></label>
+            <button id="taisan" type="button" class="btn btn-info ml-5"
+                    data-toggle="modal" data-target="#exampleModal"><i class="fas fa-search-dollar"></i> Chọn tài sản
+            </button>
+          </div>
+          <div class="row">
+            <ul class="list-group" *ngFor="let property of meetingRoom.propertyDtoList">
+              <li class="list-group-item" style="width: 200px; margin-left: 2px; max-height: 50px">
+                {{property.name}}: {{property.amount}}
+                <button style="color: red" type="button" class="close" data-toggle="modal" data-target="#deleteProperty"
+                        (click)="passData(property.id, property.name, property.amount)">
+                  <span>&times;</span></button>
+              </li>
+            </ul>
+          </div>
+          <div class="form-group text-right mt-5">
+            <input type="reset" class="btn btnSubmitCancel" (click)="cancelSubmit()" value="Hủy">
+            <input type="submit" class="btn btnSubmitEdit ml-2" [disabled]="!(meetingRoomForm.valid)" value="Sửa">
+          </div>
+          <div class="row mt-2">
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h3 class="modal-title" id="exampleModalLabel">Chọn tài sản</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="container-fluid" style="min-height: 200px">
+                      <div class="row" style="width: 100%">
+                        <p style="color:red; text-align: center; width: 100%" *ngIf="messageEdit != ''">
+                          <span>{{messageEdit}}</span>
+                        </p>
+                      </div>
+                      <br>
+                      <div class="row">
+
+                        <table class="table table-bordered">
+                          <thead>
+                          <tr class="table-active">
+                            <th scope="col">Tài sản</th>
+                            <th scope="col">Trong kho (cái)</th>
+                            <th scope="col">Số lượng thay đổi</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr *ngFor="let property of properties | slice: (page-1) * pageSize : page * pageSize">
+                            <ng-container
+                              *ngIf="property.name.includes(namePropertyForSearch) || namePropertyForSearch== ''">
+                              <th scope="row">{{property.name}}</th>
+                              <td>{{property.amountTotal}}</td>
+                              <td>
+                                <input type="number" style="width: 90px" [value]="property.amount"
+                                       (change)="changeAmount($event, property.id, property.name, property.amountTotal)">
+                              </td>
+                            </ng-container>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="container">
+                      <div class="row mr-auto" style="width: 100%">
+                        <ngb-pagination
+                          [(page)]="page"
+                          [pageSize]="pageSize"
+                          [collectionSize]="collectionSize"></ngb-pagination>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--  modal xoa property-->
+<div class="modal fade" id="deleteProperty" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteProperty1">Xóa tài sản</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Bạn có muốn xóa <span style="color: red">{{this.namePropertyDelete}}</span>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="deleteProperty()">Xóa</button>
+      </div>
+    </div>
+  </div>
+</div>
+<ngx-bootstrap-spinner
+  bdColor="rgba(51,51,51,0.8)"
+  size="default"
+  color="#fff"
+  type="border"
+  loadingText="Đang tải..."
+>
+</ngx-bootstrap-spinner>
+
